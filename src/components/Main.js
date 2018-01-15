@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
+
+import MainTabNavigator from './MainTabNavigator'
 
 export default class Main extends Component {
   render () {
     return (
-      <View>
-        <Text>Test</Text>
-      </View>
+      <MainTabNavigator />
     )
   }
 }

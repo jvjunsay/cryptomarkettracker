@@ -14,7 +14,7 @@ const RouterComponent = () => {
         <Scene
           key='employeeCreate'
           component={Main}
-          title='Create Employee' />
+          title='Coin Market Tracker' />
 
       </Scene>
     </Router>
