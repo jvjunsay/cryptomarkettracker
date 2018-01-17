@@ -1,68 +1,95 @@
 import React, { Component } from 'react'
-import {View} from 'react-native'
-import { List, ListItem } from 'react-native-elements'
+import { connect } from 'react-redux'
+import { ScrollView, View, Text } from 'react-native'
+import { Card, ListItem } from 'react-native-elements'
+import { fetchCMC, fetchCMCGlobal } from '../actions'
+import _ from 'lodash'
 
-const data = [
-  {
-    name: 'Amy Farha',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-    subtitle: 'Vice President'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
-  },
-  {
-    name: 'Chris Jackson',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-    subtitle: 'Vice Chairman'
+export class CoinMarketCap extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      marketCap: 0,
+      hr: 0,
+      cryptocurrencies: 0,
+      markets: 0
+    }
   }
 
-]
+  componentDidMount () {
+    this.props.fetchCMC()
+  }
 
-export default class CoinMarketCap extends Component {
-  static navigationOptions = {
-    title: 'Coin Market Cap'
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      marketCap: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.total_market_cap_usd : 0,
+      hr: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.total_24h_volume_usd : 0,
+      cryptocurrencies: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.active_currencies : 0,
+      markets: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.active_markets : 0
+    })
+    // console.log(nextProps)
   }
 
   render () {
+    let {data} = this.props
+
     return (
-      <View>
-        <List containerStyle={{marginBottom: 20}}>
+      <ScrollView>
+
+        <Card title='Coin Market Cap' containerStyle={{padding: 0}}>
+          <Text style={styles.textView}>
+            Maket Cap : $ {this.state.marketCap} {'\n'}24hr Vol : $ {this.state.hr} {'\n'}
+            Cryptocurrencies : {this.state.cryptocurrencies} {'\n'}Markets : {this.state.markets}
+          </Text>
+
           {
-          data.map((l, i) => (
-            <ListItem
-              roundAvatar
-              avatar={{uri: l.avatar_url}}
-              key={i}
-              title={l.name}
-              hideChevron
-            />
-          ))
+          _.map(data.data, (d) => {
+            return (
+              <ListItem
+                key={d.id}
+                title={d.name}
+                roundAvatar
+                hideChevron
+                avatar={{uri: 'https://files.coinmarketcap.com/static/img/coins/32x32/' + d.id + '.png'}}
+                subtitle={
+
+                  <View style={styles.subtitleView}>
+                    <Text>
+                      Price : {'$' + d.price_usd} {'\n'}
+                      24Hr : {d.percent_change_24h + ' %'}
+                    </Text>
+
+                  </View>
+                }
+              />
+            )
+          })
         }
-        </List>
-      </View>
+        </Card>
+      </ScrollView>
+
     )
   }
 }
+
+const styles = {
+  subtitleView: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingTop: 5
+  },
+  textView: {
+    marginLeft: 10,
+    marginBottom: 3
+  }
+}
+
+function mapStateToProps ({cmc}) {
+  return {data: cmc}
+}
+
+// const mapDispatchToProps = {
+
+// }
+
+export default connect(mapStateToProps, { fetchCMC, fetchCMCGlobal })(CoinMarketCap)
