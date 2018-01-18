@@ -3,7 +3,7 @@ import * as type from './Types'
 
 export const fetchCMC = (params) => async (dispatch) => {
   try {
-    const url = 'https://api.coinmarketcap.com/v1/ticker/'
+    const url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0'
     const url2 = 'https://api.coinmarketcap.com/v1/global/'
     let data = await axios.get(url)
     let data2 = await axios.get(url2)

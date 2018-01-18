@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ScrollView, View, Text } from 'react-native'
-import { Card, ListItem } from 'react-native-elements'
+import { Card, ListItem, SearchBar } from 'react-native-elements'
 import { fetchCMC, fetchCMCGlobal } from '../actions'
 import _ from 'lodash'
 
@@ -25,16 +25,27 @@ export class CoinMarketCap extends Component {
       marketCap: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.total_market_cap_usd : 0,
       hr: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.total_24h_volume_usd : 0,
       cryptocurrencies: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.active_currencies : 0,
-      markets: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.active_markets : 0
+      markets: (nextProps.data.globalMarket) ? nextProps.data.globalMarket.active_markets : 0,
+      coinData: nextProps.data.data || []
     })
     // console.log(nextProps)
   }
 
-  render () {
-    let {data} = this.props
+  onChangeText (value) {
+    let data = this.props.data.data
 
+    this.setState({coinData: _.filter(data, (d) => {
+      return (d.name.indexOf(value) !== -1)
+    })})
+  }
+
+  onClearText (value) {
+    console.log(value)
+  }
+
+  render () {
     return (
-      <ScrollView>
+      <ScrollView style={{flex: 1}}>
 
         <Card title='Coin Market Cap' containerStyle={{padding: 0}}>
           <Text style={styles.textView}>
@@ -42,8 +53,15 @@ export class CoinMarketCap extends Component {
             Cryptocurrencies : {this.state.cryptocurrencies} {'\n'}Markets : {this.state.markets}
           </Text>
 
+          <SearchBar
+            lightTheme
+            clearIcon={{ color: '#86939e', name: 'close' }}
+            onChangeText={this.onChangeText.bind(this)}
+            onClearText={this.onClearText.bind(this)}
+            placeholder='Type Here...' />
+
           {
-          _.map(data.data, (d) => {
+          _.map(this.state.coinData, (d) => {
             return (
               <ListItem
                 key={d.id}
