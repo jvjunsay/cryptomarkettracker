@@ -6,9 +6,7 @@ import Main from './src/components/Main'
 const RouterComponent = () => {
   return (
     <Router sceneStyle={{paddingTop: 65}}>
-      <Scene key='auth'>
-        <Scene key='login' component={LoginForm} title='Login' initial />
-      </Scene>
+     
       <Scene key='main'>
 
         <Scene
@@ -16,6 +14,10 @@ const RouterComponent = () => {
           component={Main}
           title='Coin Market Tracker' />
 
+      </Scene>
+
+      <Scene key='auth'>
+        <Scene key='login' component={LoginForm} title='Login' initial />
       </Scene>
     </Router>
   )

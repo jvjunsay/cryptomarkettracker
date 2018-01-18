@@ -46,6 +46,9 @@ export class CoinMarketCap extends Component {
   render () {
     return (
       <ScrollView style={{flex: 1}}>
+        <View>
+
+        </View>
 
         <Card title='Coin Market Cap' containerStyle={{padding: 0}}>
           <Text style={styles.textView}>
@@ -99,7 +102,7 @@ const styles = {
   textView: {
     marginLeft: 10,
     marginBottom: 3
-  }
+  },
 }
 
 function mapStateToProps ({cmc}) {
